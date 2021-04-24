@@ -25,6 +25,7 @@ if __name__ == "__main__":
     data = pandas.read_csv("./states.csv")
     num_states = len(pandas.Series.to_list(data["state"]))
     states = get_states()
+    guessed = {}
     correct = 0
     setup_screen(screen)
     writer = turtle.Turtle()
@@ -33,8 +34,10 @@ if __name__ == "__main__":
     while True:
         screen.update()
         state = turtle.textinput(title=f"{correct}/{num_states} states guessed", prompt="Enter state").lower()
+        if state == "exit": break
         if states.get(state):
             writer.setpos(states[state][0], states[state][1])
+            guessed[state] = (states[state][0], states[state][1])
             writer.write(state.capitalize(), move=False, align="center", font=("Arial", 10, "normal"))
             correct += 1
         if correct == num_states:
@@ -42,3 +45,9 @@ if __name__ == "__main__":
             writer.write("You got them all!", move=False, align="center", font=("Arial", 20, "normal"))
             sleep(2)
             break
+    with open("./states_to_learn.csv", "w") as file:
+        writer = csv.DictWriter(file, fieldnames=("state_to_learn", "x", "y"))
+        writer.writeheader()
+        to_write = {i: k for i, k in states.items() if not guessed.get(i)}
+        for name, coords in to_write.items():
+            writer.writerow({"state_to_learn": name, "x": coords[0], "y": coords[1]})
