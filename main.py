@@ -35,7 +35,7 @@ if __name__ == "__main__":
         screen.update()
         state = turtle.textinput(title=f"{correct}/{num_states} states guessed", prompt="Enter state").lower()
         if state == "exit": break
-        if states.get(state):
+        if states.get(state) and not guessed.get(state):
             writer.setpos(states[state][0], states[state][1])
             guessed[state] = (states[state][0], states[state][1])
             writer.write(state.capitalize(), move=False, align="center", font=("Arial", 10, "normal"))
